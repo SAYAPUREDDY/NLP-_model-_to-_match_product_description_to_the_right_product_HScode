@@ -1,94 +1,85 @@
-# As we cant get the real data now we gonna use some synthetic data for our modeling purpose
-#import the necessary libraries
-import random
 import pandas as pd
+import random
 
-# Updated Categories for generating product descriptions
-categories = [
-    "Wireless mouse",
-    "Bluetooth speaker",
-    "Gaming keyboard",
-    "Fitness tracker",
-    "Electric kettle",
-    "Smartwatch",
-    "Digital camera",
-    "Portable charger",
-    "Noise-cancelling headphones",
-    "Smart thermostat",
-    "Wi-Fi router",
-    "Electric toothbrush",
-    "Coffee maker",
-    "Air fryer",
-    "Microwave oven",
-    "Smart TV",
-    "Robot vacuum cleaner",
-    "3D printer",
-    "VR headset",
-    "Electric scooter",
-    "Portable air conditioner",
-    "Smart door lock",
-    "Dash camera",
-    "Portable blender",
-    "Water purifier",
-    "Gaming console",
-    "Smart light switch",
-    "Electric standing desk",
-    "Office chair",
-    "Smartphone holder",
-    "Home security camera",
-    "Wireless charging pad",
-    "Smart refrigerator",
-    "Smart washing machine",
-    "Bluetooth tracker",
-    "Noise-cancelling earbuds",
-    "Smart LED strip",
-    "Portable projector",
-    "Electric heater",
-    "Smart air purifier",
-    "Smart baby monitor",
-    "Wireless presentation remote",
-    "Digital picture frame",
-    "Portable tire inflator",
-    "Bluetooth car kit",
-    "Home theater system",
-    "Smart scale",
-    "Smart mirror",
-    "Smart water bottle",
-    "Portable solar charger"
-]
+# Define product classes and attributes
+product_classes = {
+    'car': {
+        'colors': ['red', 'blue', 'black', 'white'],
+        'sizes': ['compact', 'sedan', 'SUV', 'truck'],
+        'models': ['2023', '2024', '2025'],
+        'hs_code': '870320'
+    },
+    'bike': {
+        'colors': ['red', 'black', 'green', 'blue'],
+        'sizes': ['small', 'medium', 'large'],
+        'models': ['mountain', 'road', 'hybrid'],
+        'hs_code': '871190'
+    },
+    'watch': {
+        'colors': ['black', 'silver', 'gold', 'blue'],
+        'sizes': ['small', 'medium', 'large'],
+        'batteries': ['AA', 'AAA', 'rechargeable'],
+        'hs_code': '910211'
+    },
+    'clothes': {
+        'colors': ['red', 'blue', 'green', 'black'],
+        'sizes': ['S', 'M', 'L', 'XL'],
+        'fabrics': ['cotton', 'wool', 'polyester'],
+        'hs_code': '620293'
+    },
+    'mobile': {
+        'colors': ['black', 'white', 'blue', 'red'],
+        'sizes': ['5.5 inch', '6 inch', '6.5 inch'],
+        'batteries': ['3000mAh', '4000mAh', '5000mAh'],
+        'compatibilities': ['4G', '5G'],
+        'hs_code': '851712'
+    }
+}
 
-# Updated adjectives and attributes to make the descriptions
-colors = ["black", "white", "silver", "red", "blue", "green", "yellow", "gold", "pink", "purple"]
-sizes = ["compact", "small", "medium", "large", "extra-large", "portable"]
-materials = ["plastic", "metal", "aluminum", "steel", "ceramic", "glass", "carbon fiber"]
-additional_attributes = ["wireless", "water-resistant", "rechargeable", "energy-efficient", "Bluetooth-enabled", "smart", "portable", "touchscreen", "voice-controlled", "app-connected"]
-
-# Function to generate a random and unique HS code
-def generate_unique_hs_code(existing_codes):
-    while True:
-        hs_code = f"{random.randint(1000, 9999)}.{random.randint(10, 99)}"
-        if hs_code not in existing_codes:
-            existing_codes.add(hs_code)
-            return hs_code
-
-data = []
-used_hs_codes = set()  
-#loop to get the different product description
-for i in range(5000):
-    product_type = random.choice(categories)
-    color = random.choice(colors)
-    size = random.choice(sizes)
-    material = random.choice(materials)
-    attribute = random.choice(additional_attributes)
+# Function to generate descriptions based on product class
+def generate_description(product_class):
+    attributes = product_classes[product_class]
+    color = random.choice(attributes.get('colors', ['']))
+    size = random.choice(attributes.get('sizes', ['']))
+    model = random.choice(attributes.get('models', ['']))
+    battery = random.choice(attributes.get('batteries', ['']))
+    fabric = random.choice(attributes.get('fabrics', ['']))
+    compatibility = random.choice(attributes.get('compatibilities', ['']))
     
-    # Creating the product description
-    description = f"{size} {material} {product_type.lower()}, {color}, {attribute}"
-    # this particular line is responsible for generating the unique hscodes
-    hs_code = generate_unique_hs_code(used_hs_codes)
-    data.append([description, hs_code])
+    if product_class == 'car':
+        return f"{color} {product_class} model {model}, size {size}"
+    elif product_class == 'bike':
+        return f"{color} {product_class}, size {size}, model {model}"
+    elif product_class == 'watch':
+        return f"{color} {product_class}, size {size}, battery {battery}"
+    elif product_class == 'clothes':
+        return f"{color} {product_class}, size {size}, fabric {fabric}"
+    elif product_class == 'mobile':
+        return f"{color} {product_class}, size {size}, battery {battery}, compatibility {compatibility}"
+    return ""
 
-df = pd.DataFrame(data, columns=["Product Description", "HS Code"])
+# Generate 3,000 samples
+num_samples = 3000
+data = {
+    'description': [],
+    'hs_code': []
+}
 
-df.to_csv("product_description_hscode_data.csv", index=False)
+for i in range(num_samples):
+    # Randomly select a product class
+    product_class = random.choice(list(product_classes.keys()))
+    description = generate_description(product_class)
+    hs_code = product_classes[product_class]['hs_code']
+    
+    # Add to data dictionary
+    data['description'].append(description)
+    data['hs_code'].append(hs_code)
 
-print(df.head())
+# Create a DataFrame
+df = pd.DataFrame(data)
+
+# Save the DataFrame to a CSV file
+df.to_csv('product_hs_code_data.csv', index=False)
+
+print("Sample dataset with 3,000 entries has been created and saved to 'product_hs_code_data.csv'.")
+
