@@ -41,4 +41,4 @@ The model achieved a satisfactory accuracy and demonstrated its ability to class
 ## **How to Use**
 1. Clone this repository: 
    ```bash
-   git clone https://github.com/your-repository/product-description-to-hscode.git
+   https://github.com/SAYAPUREDDY/NLP_model_to_match_product_description_to_the_right_product_HScode.git
